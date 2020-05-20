@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QApplication, QMainWindow
 from GUI import Ui_MainWindow
 import sys
 
@@ -9,9 +10,20 @@ class Editor(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        self.ui.apply_button.clicked.connect(self.apply_changes)
+
+    def apply_changes(self):
+        self.ui.main_text.setFont(QFont(self.ui.select_font_comboBox.currentText(), int(self.ui.font_size_spinBox.value())))
+
+    def save(self):
+        pass
+
+    def open(self):
+        pass
 
 
-app = QApplication(sys.argv)
-window = Editor()
-window.show()
-sys.exit(app.exec_())
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = Editor()
+    window.show()
+    sys.exit(app.exec_())
