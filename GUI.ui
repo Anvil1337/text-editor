@@ -245,6 +245,8 @@ p, li { white-space: pre-wrap; }
     <addaction name="menu_open"/>
     <addaction name="menu_save"/>
     <addaction name="menu_print"/>
+    <addaction name="menu_print_preview"/>
+    <addaction name="menu_export_pdf"/>
    </widget>
    <widget class="QMenu" name="menuAllignment">
     <property name="title">
@@ -292,6 +294,16 @@ p, li { white-space: pre-wrap; }
   <action name="menu_print">
    <property name="text">
     <string>Print</string>
+   </property>
+  </action>
+  <action name="menu_print_preview">
+   <property name="text">
+    <string>Print Preview</string>
+   </property>
+  </action>
+  <action name="menu_export_pdf">
+   <property name="text">
+    <string>Export to PDF</string>
    </property>
   </action>
  </widget>

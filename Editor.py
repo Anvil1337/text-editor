@@ -1,7 +1,7 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QFileInfo
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
-from PyQt5.QtPrintSupport import QPrinter, QPrintDialog
+from PyQt5.QtPrintSupport import QPrinter, QPrintDialog, QPrintPreviewDialog
 from GUI import Ui_MainWindow
 import sys
 
@@ -11,13 +11,17 @@ class Editor(QMainWindow):
         super(Editor, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.ui.main_text.setText("Hello!")
+        self.ui.main_text.setText('Hello!')
 
         self.ui.menu_save.triggered.connect(self.save)
 
         self.ui.menu_open.triggered.connect(self.open)
 
         self.ui.menu_print.triggered.connect(self.print_file)
+
+        self.ui.menu_print_preview.triggered.connect(self.print_preview)
+
+        self.ui.menu_export_pdf.triggered.connect(self.export_pdf)
         
         self.ui.left_alignment.triggered.connect(
             lambda: self.ui.main_text.setAlignment(Qt.AlignLeft))
@@ -31,13 +35,13 @@ class Editor(QMainWindow):
         self.ui.justify_alignment.triggered.connect(
             lambda: self.ui.main_text.setAlignment(Qt.AlignJustify))
 
-        self.ui.bold_checkBox.clicked.connect(
+        self.ui.bold_checkBox.toggled.connect(
             lambda: self.ui.main_text.setFontWeight(QFont.Bold if self.ui.bold_checkBox.isChecked() else 0))
 
-        self.ui.italic_checkBox.clicked.connect(
+        self.ui.italic_checkBox.toggled.connect(
             lambda: self.ui.main_text.setFontItalic(self.ui.italic_checkBox.isChecked()))
 
-        self.ui.underline_checkBox.clicked.connect(
+        self.ui.underline_checkBox.toggled.connect(
             lambda: self.ui.main_text.setFontUnderline(self.ui.underline_checkBox.isChecked()))
 
         self.ui.font_size_spinBox.valueChanged.connect(
@@ -61,7 +65,6 @@ class Editor(QMainWindow):
             with open(file_name, 'r') as file:
                 self.ui.main_text.setText(file.read())
 
-
     def print_file(self):
         printer = QPrinter(QPrinter.HighResolution)
         dialog = QPrintDialog(printer, self)
@@ -69,7 +72,26 @@ class Editor(QMainWindow):
         if dialog.exec_() == QPrintDialog.Accepted:
             self.ui.main_text.print_(printer)
 
-if __name__ == "__main__":
+    def print_preview(self):
+        printer = QPrinter(QPrinter.HighResolution)
+        print(123)
+        preview_dialog = QPrintPreviewDialog(printer, self)
+        preview_dialog.paintRequested.connect(
+            lambda: self.ui.main_text.print_(printer))
+        preview_dialog.exec_()
+
+    def export_pdf(self):
+        fn, _ = QFileDialog.getSaveFileName(self, 'Export to PDF', None, 'PDF files (.pdf) ;; All Files')
+        if fn != '':
+            if QFileInfo(fn).suffix() == '':
+                fn += '.pdf'
+            printer = QPrinter(QPrinter.HighResolution)
+            printer.setOutputFormat(QPrinter.PdfFormat)
+            printer.setOutputFileName(fn)
+            self.ui.main_text.document().print_(printer)
+
+
+if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = Editor()
     window.show()
