@@ -47,14 +47,13 @@ class Editor(QMainWindow):
         self.ui.font_size_spinBox.valueChanged.connect(
             lambda: self.ui.main_text.setFontPointSize(self.ui.font_size_spinBox.value()))
 
-        self.ui.select_font_comboBox.currentTextChanged.connect(self.change_font)
+        self.ui.select_font_box.currentFontChanged.connect(self.change_font)
 
     def change_font(self):
-        self.ui.main_text.setCurrentFont(QFont(self.ui.select_font_comboBox.currentText(),
-                                               self.ui.font_size_spinBox.value(),
-                                               self.text_weight(),
-                                               self.ui.italic_checkBox.isChecked()))
-
+        self.ui.main_text.setCurrentFont(self.ui.select_font_box.currentFont())
+        self.ui.main_text.setFontPointSize(self.ui.font_size_spinBox.value())
+        self.ui.main_text.setFontWeight(self.text_weight())
+        self.ui.main_text.setFontItalic(self.ui.italic_checkBox.isChecked())
         self.ui.main_text.setFontUnderline(self.ui.underline_checkBox.isChecked())
 
     def save(self):
