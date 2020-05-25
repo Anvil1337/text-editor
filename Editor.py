@@ -2,7 +2,7 @@ import os
 
 from PyQt5.QtCore import Qt, QFileInfo
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QColorDialog
 from PyQt5.QtPrintSupport import QPrinter, QPrintDialog, QPrintPreviewDialog
 from GUI import Ui_MainWindow
 import sys
@@ -22,6 +22,8 @@ class Editor(QMainWindow):
         self.ui.menu_export_pdf.triggered.connect(self.export_pdf)
 
         self.text_weight = lambda: QFont.Bold if self.ui.bold_checkBox.isChecked() else 0
+
+        self.ui.color_change_button.clicked.connect(self.change_font_color)
 
         self.ui.left_alignment.triggered.connect(
             lambda: self.ui.main_text.setAlignment(Qt.AlignLeft))
@@ -49,6 +51,12 @@ class Editor(QMainWindow):
 
         self.ui.select_font_box.currentFontChanged.connect(self.change_font)
 
+    def change_font_color(self):
+        color = QColorDialog.getColor()
+        if color.isValid():
+            self.ui.main_text.setTextColor(color)
+            self.ui.color_change_button.setStyleSheet("background-color: {}".format(color.name()))
+
     def change_font(self):
         self.ui.main_text.setCurrentFont(self.ui.select_font_box.currentFont())
         self.ui.main_text.setFontPointSize(self.ui.font_size_spinBox.value())
@@ -61,8 +69,11 @@ class Editor(QMainWindow):
         if file_name:
             text = self.ui.main_text.toHtml() if os.path.splitext(file_name)[1] in ['.html', '.htm'] \
                 else self.ui.main_text.toPlainText()
-            with open(file_name, 'w') as f:
-                f.write(text)
+            try:
+                with open(file_name, 'w') as f:
+                    f.write(text)
+            except UnicodeEncodeError:
+                return
 
     def open(self):
         file_name = QFileDialog.getOpenFileName(self, 'Open File')[0]

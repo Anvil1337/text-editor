@@ -149,7 +149,7 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
    </widget>
-   <widget class="QToolButton" name="toolButton">
+   <widget class="QToolButton" name="color_change_button">
     <property name="geometry">
      <rect>
       <x>670</x>

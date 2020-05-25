@@ -63,10 +63,11 @@ class Ui_MainWindow(object):
         self.select_font_box = QtWidgets.QFontComboBox(self.centralwidget)
         self.select_font_box.setGeometry(QtCore.QRect(400, 20, 171, 31))
         self.select_font_box.setObjectName("select_font_box")
-        self.toolButton = QtWidgets.QToolButton(self.centralwidget)
-        self.toolButton.setGeometry(QtCore.QRect(670, 10, 111, 51))
-        self.toolButton.setText("")
-        self.toolButton.setObjectName("toolButton")
+        self.color_change_button = QtWidgets.QToolButton(self.centralwidget)
+        self.color_change_button.setGeometry(QtCore.QRect(670, 10, 111, 51))
+        self.color_change_button.setText("")
+        self.color_change_button.setObjectName("color_change_button")
+        self.color_change_button.setStyleSheet("background-color: black")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 839, 26))
@@ -119,9 +120,7 @@ class Ui_MainWindow(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; "
-                                                        "-qt-block-indent:0; text-indent:0px; font-family:\'MS Shell "
-                                                        "Dlg 2\'; font-size:7.8pt;\"><br /></p></body></html>"))
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'MS Shell Dlg 2\'; font-size:7.8pt;\"><br /></p></body></html>"))
         self.font_label.setText(_translate("MainWindow", "Font:"))
         self.bold_checkBox.setText(_translate("MainWindow", "Bold"))
         self.italic_checkBox.setText(_translate("MainWindow", "Italic"))
