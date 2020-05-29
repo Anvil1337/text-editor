@@ -5,7 +5,8 @@
 # Created by: PyQt5 UI code generator 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
-
+import os
+import uuid
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -16,7 +17,7 @@ class Ui_MainWindow(object):
         MainWindow.resize(839, 644)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.main_text = QtWidgets.QTextEdit(self.centralwidget)
+        self.main_text = TextEdit(self.centralwidget)
         self.main_text.setGeometry(QtCore.QRect(20, 70, 801, 511))
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -116,11 +117,12 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.main_text.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'MS Shell Dlg 2\'; font-size:7.8pt;\"><br /></p></body></html>"))
+        self.main_text.setHtml(_translate("MainWindow",
+                                          "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                          "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                          "p, li { white-space: pre-wrap; }\n"
+                                          "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
+                                          "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'MS Shell Dlg 2\'; font-size:7.8pt;\"><br /></p></body></html>"))
         self.font_label.setText(_translate("MainWindow", "Font:"))
         self.bold_checkBox.setText(_translate("MainWindow", "Bold"))
         self.italic_checkBox.setText(_translate("MainWindow", "Italic"))
@@ -138,8 +140,47 @@ class Ui_MainWindow(object):
         self.menu_export_pdf.setText(_translate("MainWindow", "Export to PDF"))
 
 
+class TextEdit(QtWidgets.QTextEdit):
+
+    def canInsertFromMimeData(self, source):
+
+        if source.hasImage():
+            return True
+        else:
+            return super(TextEdit, self).canInsertFromMimeData(source)
+
+    def insertFromMimeData(self, source):
+
+        cursor = self.textCursor()
+        document = self.document()
+
+        if source.hasUrls():
+
+            for u in source.urls():
+                file_ext = os.path.splitext(str(u.toLocalFile()))[1].lower()
+                if u.isLocalFile() and file_ext in ['.jpg', '.png', '.bmp']:
+                    image = QtGui.QImage(u.toLocalFile())
+                    document.addResource(QtGui.QTextDocument.ImageResource, u, image)
+                    cursor.insertImage(u.toLocalFile())
+
+                else:
+                    break
+            else:
+                return
+
+        elif source.hasImage():
+            image = source.imageData()
+            cur_uuid = uuid.uuid4().hex
+            document.addResource(QtWidgets.QTextDocument.ImageResource, cur_uuid, image)
+            cursor.insertImage(cur_uuid)
+            return
+
+        super(TextEdit, self).insertFromMimeData(source)
+
+
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
